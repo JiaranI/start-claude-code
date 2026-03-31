@@ -260,7 +260,7 @@ function ChordInterceptor(t0) {
         case "match":
           {
             setPendingChord(null);
-            if (wasInChord) {
+            {
               const contextsSet = new Set(contexts);
               if (registry) {
                 const handlers_0 = registry.get(result.action);
