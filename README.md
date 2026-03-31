@@ -129,6 +129,34 @@ src/
 
 ---
 
+## Status
+
+| Feature | Status | Notes |
+|---|---|---|
+| `--version` / `--help` | Working | |
+| `-p` non-interactive mode | Working | Full API call + tool use |
+| Third-party proxy support | Working | Set `ANTHROPIC_BASE_URL` |
+| Interactive TUI | WIP | See below |
+
+### Why the TUI doesn't fully work yet
+
+The leak only contains the `src/` directory — raw TypeScript source before compilation. Running it from source requires reverse-engineering the build infrastructure that Anthropic didn't ship:
+
+| Missing piece | What it is | Our workaround |
+|---|---|---|
+| `bun:bundle` | Compile-time feature flag API (dead code elimination) | Runtime shim returning `false` for all flags |
+| `MACRO.*` | Build-time constant injection (`MACRO.VERSION` etc.) | Global variable definition in preload |
+| `package.json` | Dependency declarations (94 packages) | Reverse-engineered from import statements |
+| Private npm packages | `@anthropic-ai/sandbox-runtime`, `@ant/*`, `@anthropic-ai/mcpb` | Empty stub modules with fake exports |
+| Generated files | `coreTypes.generated.ts` etc. (built by internal scripts) | Manually created type stubs |
+| Feature-gated files | Files deleted at compile time (`connectorText.ts`, `TungstenTool/*`) | Empty stub files |
+
+The interactive TUI uses a **custom fork of Ink** (React terminal renderer) with 140+ components. Most rendering works, but some components depend on stubbed packages that return empty/no-op values, causing subtle rendering issues.
+
+**We're actively reverse-engineering the remaining pieces.** PRs welcome.
+
+---
+
 ## Troubleshooting
 
 ### "API Error: 400 ... invalid beta flag"
