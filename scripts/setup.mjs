@@ -222,6 +222,12 @@ export default {};
   'src/tools/WorkflowTool/constants.ts':
     'export default {};\n',
 
+  'src/tools/TungstenTool/TungstenLiveMonitor.ts':
+    'export default {};\n',
+
+  'src/utils/ultraplan/prompt.txt.ts':
+    'export default {};\n',
+
   'src/ink/global.d.ts':
     'export default {};\n',
 
